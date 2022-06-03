@@ -43,7 +43,7 @@ def generate_payload(source, profile_id):
                 return session[randint(0, len(session) - 1)]
         return str(uuid4())
 
-    no_of_events = randint(1, 15)
+    no_of_events = randint(1, 5)
     _events = [_get_event(events[randint(0, len(events) - 1)]) for _ in range(0, no_of_events)]
 
     payload = {
