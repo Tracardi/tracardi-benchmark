@@ -15,7 +15,7 @@ events = [
     {"type": 'product-view', "props": make_fake_product},
     {"type": 'product-purchase', "props": make_fake_product_purchase},
     {"type": 'product-in-basket', "props": make_fake_product},
-    {"type": 'sign-up', "props": fake_persons[randint(0, 499)]},
+    {"type": 'sign-up', "props": lambda: fake_persons[randint(0, 499)]},
     {"type": 'log-in', "props": make_fake_login},
     {"type": 'product-details', "props": make_fake_product}
 ]
