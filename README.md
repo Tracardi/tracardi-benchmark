@@ -1,3 +1,7 @@
+```
+pip install -r requirements.txtx
+```
+
 Run `locust` to start or run docker
 
 ```bash 

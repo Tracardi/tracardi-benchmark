@@ -4,10 +4,10 @@ from uuid import uuid4
 from fake_data_maker.generate_context import make_fake_session_context
 from fake_data_maker.generate_pii import make_fake_login, fake_persons
 from fake_data_maker.generate_products import make_fake_product, make_fake_product_purchase
-from fake_data_maker.generate_session import get_session_for_email
 
 sources = [str(uuid4()) for _ in range(0, 8)]
 profiles = [str(uuid4()) for _ in range(0, 10)]
+sessions_pool = [str(uuid4()) for _ in range(0, 200)]
 
 events = [
     {"type": 'page-view', "props": {}},
@@ -37,11 +37,7 @@ def generate_payload(source, profile_id):
         }
 
     def get_session(events):
-        for event in events:
-            if event['type'] in ['sign-up', 'log-in']:
-                session = get_session_for_email(event['properties']['email'])
-                return session[randint(0, len(session) - 1)]
-        return str(uuid4())
+        return sessions_pool[randint(0, len(sessions_pool) - 1)]
 
     no_of_events = randint(1, 5)
     _events = [_get_event(events[randint(0, len(events) - 1)]) for _ in range(0, no_of_events)]

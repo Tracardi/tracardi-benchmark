@@ -7,7 +7,7 @@ from fake_data_maker.generate_payload import generate_payload, profiles
 
 class WebsiteUser(HttpUser):
     wait_time = between(.5, 1)
-    host = "http://localhost:8686"
+    host = "http://async.mt-hetzner.lb"    # Your API
 
     @task
     def track(self):
@@ -20,5 +20,7 @@ class WebsiteUser(HttpUser):
                 profiles.append(response['profile']['id'])
         except KeyError:
             pass
+        except TypeError:
+            pass
 
-        print(response)
+        # print(response)
