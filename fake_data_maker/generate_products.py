@@ -29,6 +29,16 @@ def make_fake_product():
     }
 
 
+def add_to_basket():
+    return {
+        "name": fake.ecommerce_name(),
+        "category": fake.ecommerce_category(),
+        "price": ecommerce_price(False),
+        "quanity": randint(1, 3),
+        "id": randint(1, 3349875),
+        "sku": fake.bothify(text='????-########', letters='ABCDE')
+    }
+
 fake_products = [make_fake_product() for _ in range(0, 1000)]
 
 
@@ -36,3 +46,14 @@ def make_fake_product_purchase():
     product = fake_products[randint(0, 999)]
     product["card"] = fake.credit_card_number()
     return product
+
+
+def checkout_data():
+    return {
+        "id": randint(0, 999123),
+        "order_id": randint(0, 999123),
+        "value": randint(0, 923),
+        "currency": "USD",
+        "coupon": "10% OFF"
+
+    }

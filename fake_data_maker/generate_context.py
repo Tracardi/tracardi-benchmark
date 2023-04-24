@@ -1,9 +1,13 @@
 from pprint import pprint
-from random import randint
+from random import randint, choice
 from urllib import parse
 
 import faker_commerce
 from faker import Faker
+
+from fake_data_maker.generate_app import generate_app
+from fake_data_maker.generate_os import generate_os
+from fake_data_maker.generate_resolution import generate_resolution
 
 fake = Faker()
 fake.add_provider(faker_commerce.Provider)
@@ -21,12 +25,39 @@ color_depths = [16, 24, 32]
 def make_fake_session_context():
     uri = fake.uri()
     uri_parsed = parse.urlparse(uri)
+    brand = fake.company()
+    model = fake.word() + ' ' + fake.word() + ' ' + fake.word()
+    geo = fake.location_on_land()
     return {
 
         "time": {
             "local": "8/26/2021, 9:36:13 PM",
             "tz": fake.timezone()
         },
+        "device": {
+            "name": "Other",
+            "brand": brand,
+            "model": model,
+            "type": choice(['pc', 'mobile', 'tablet', 'system']),
+            "touch": False,
+            "ip": None,
+            "resolution": generate_resolution(),
+            "geo": {
+                "country": {
+                    "name": geo[4],
+                    "code": geo[3]
+                },
+                "city": geo[2],
+                "county": geo[3],
+                "postal": None,
+                "latitude": geo[0],
+                "longitude": geo[1]
+            },
+            "color_depth": choice([8, 16, 24, 32]),
+            "orientation": "landscape-primary"
+        },
+        "os": generate_os(),
+        "app": generate_app(),
         "page": {
             "url": uri,
             "path": uri_parsed.path,

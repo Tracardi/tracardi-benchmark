@@ -14,18 +14,32 @@ fake_emails = [fake.email() for _ in range(0, 1500)]
 def make_fake_pii():
     name = fake.name().split()
     return {
-        "name": name[0],
-        "surname": name[1],
-        "address": fake.address(),
+        "firstname": name[0],
+        "lastname": name[1],
         "phone": fake.phone_number(),
         "email": fake_emails[randint(0, 1499)]
     }
 
 
-fake_persons = [make_fake_pii() for _ in range(0, 500)]
+def make_identification_data():
+    name = fake.name().split()
+    tn = fake.phone_number()
+    return {
+        "firstname": name[0],
+        "lastname": name[1],
+        "slack": f"@{name[1]}",
+        "telegram": f"@{name[0]}",
+        "phone": tn,
+        "whatsapp": tn,
+        "email": fake_emails[randint(0, 1499)]
+    }
 
+
+fake_persons = [make_fake_pii() for _ in range(0, 500)]
+fake_identity = [make_identification_data() for _ in range(0, 500)]
 
 def make_fake_login():
+    name = fake.name().split()
     return {
         "email": fake_emails[randint(0, 1499)]
     }
