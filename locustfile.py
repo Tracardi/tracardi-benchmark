@@ -14,8 +14,7 @@ class WebsiteUser(HttpUser):
         profile_id = profiles[randint(0, len(profiles) - 1)]
         profile_id = "123"
 
-        payload = generate_payload(source="07d766bc-bbe8-4aae-b2f5-642b28563c32",
-                                   profile_id=profile_id)
+        payload = generate_payload(source="07d766bc-bbe8-4aae-b2f5-642b28563c32")
         print(payload)
 
         response = self.client.post("/track", json=payload)

@@ -26,14 +26,9 @@ events = [
 ]
 
 
-def generate_payload(source, profile_id):
-    def _rand(container, threshold=3):
-        if randint(0, 10) >= threshold:
-            return choice(container)
-        else:
-            value = str(uuid4())
-            container.append(value)
-            return value
+def generate_payload(source):
+
+    profile_id = profiles[randint(0, len(profiles) - 1)]
 
     def _get_event(event):
         return {
