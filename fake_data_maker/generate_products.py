@@ -50,8 +50,8 @@ def make_fake_product_purchase():
 
 def checkout_data():
     return {
-        "id": randint(0, 999123),
-        "order_id": randint(0, 999123),
+        "id": str(randint(0, 999123)),
+        "order_id": str(randint(0, 999123)),
         "value": randint(0, 923),
         "currency": "USD",
         "coupon": "10% OFF"
