@@ -1,2 +1,2 @@
-docker build . -t tracardi/benchmark
+docker build . --no-cache -t tracardi/benchmark
 docker push tracardi/benchmark
