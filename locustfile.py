@@ -3,7 +3,7 @@ import os
 from locust import HttpUser, between, task
 from fake_data_maker.generate_payload import generate_payload, profiles
 
-source_id = os.environ.get("SOURCE_ID", None)
+source_id = os.environ.get("SOURCE_ID", 'locust-test')
 type_of_stress = os.environ.get("TYPE_OF_STRESS", 'regular')
 
 if source_id is None:
@@ -28,9 +28,10 @@ class WebsiteUser(HttpUser):
 
         elif type_of_stress == 'regular':
             payload = generate_payload(source=source_id)
-            print(payload)
+
             response = self.client.post("/track", json=payload)
         else:
             raise ValueError("Unknown TYPE_OF_STRESS is set. Available: 'regular', 'bulk', 'queue'.")
 
-        print(response.content)
+        print(type_of_stress, len(payload['events']))
+        # print(response.content)

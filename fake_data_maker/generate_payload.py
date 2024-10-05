@@ -15,9 +15,6 @@ sessions_pool = [str(uuid4()) for _ in range(0, int(os.environ.get("NO_OF_SESSIO
 
 events = [
     {"type": 'profile-update', "props": generate_profile_data},
-    {"type": 'profile-created', "props": {}},
-    {"type": 'session-opened', "props": {}},
-    {"type": 'session-closed', "props": {}},
     {"type": 'profile-interest', "props": get_random_interest},
     {"type": 'page-view', "props": {}},
     {"type": 'search', "props": make_fake_product},
@@ -55,8 +52,7 @@ def generate_payload(source, events_per_profile=1):
             "id": session_id
         },
         "profile": {
-            "id": profile_id,
-            "ids": ['b']
+            "id": profile_id
         },
         "events": [_get_event(events[randint(0, len(events) - 1)]) for _ in range(0, events_per_profile)]
     }
