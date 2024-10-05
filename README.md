@@ -1,9 +1,9 @@
 ```
-pip install -r requirements.txtx
+pip install -r requirements.txt
 ```
 
 Run `locust` to start or run docker
 
 ```bash 
-docker run -p 8089:8089 tracardi/benchmark
+docker run -e SOURCE_ID=5b564e75-3bd6-4da2-897a-d6de654881c1 -p 8089:8089 tracardi/benchmark
 ```

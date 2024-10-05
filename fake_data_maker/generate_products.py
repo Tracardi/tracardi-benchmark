@@ -41,7 +41,6 @@ def add_to_basket():
 
 fake_products = [make_fake_product() for _ in range(0, 1000)]
 
-
 def make_fake_product_purchase():
     product = fake_products[randint(0, 999)]
     product["card"] = fake.credit_card_number()
