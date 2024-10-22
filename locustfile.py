@@ -1,10 +1,10 @@
 import os
 
 from locust import HttpUser, between, task
-from fake_data_maker.generate_payload import generate_payload, profiles
+from fake_data_maker.generate_payload import generate_payload
 
 source_id = os.environ.get("SOURCE_ID", 'locust-test')
-type_of_stress = os.environ.get("TYPE_OF_STRESS", 'regular')
+type_of_stress = os.environ.get("TYPE_OF_STRESS", 'bulk-queue')
 
 if source_id is None:
     raise ValueError("No SOURCE_ID is set.")
@@ -23,15 +23,24 @@ class WebsiteUser(HttpUser):
             response = self.client.patch("/track", json=payload)
 
         elif type_of_stress == 'bulk':
-            payload = [generate_payload(source=source_id) for _ in range(0, 500)]
+            payload = [generate_payload(source=source_id) for _ in range(0, 20)]
+            response = self.client.put("/track", json=payload)
+
+        elif type_of_stress == 'bulk-queue':
+            payload = [generate_payload(source=source_id, queue=True) for _ in range(0, 10)]
             response = self.client.put("/track", json=payload)
 
         elif type_of_stress == 'regular':
             payload = generate_payload(source=source_id)
 
             response = self.client.post("/track", json=payload)
+
+
         else:
             raise ValueError("Unknown TYPE_OF_STRESS is set. Available: 'regular', 'bulk', 'queue'.")
 
-        print(type_of_stress, len(payload['events']))
+        if response.status_code == 500:
+            print(response.content)
+
+        # print(type_of_stress, len(payload['events']))
         # print(response.content)

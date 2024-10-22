@@ -27,7 +27,7 @@ events = [
 ]
 
 
-def generate_payload(source, events_per_profile=1):
+def generate_payload(source, events_per_profile=1, queue=False):
 
     profile_id = profiles[randint(0, len(profiles) - 1)]
     session_id = sessions_pool[randint(0, len(sessions_pool) - 1)]
@@ -53,6 +53,9 @@ def generate_payload(source, events_per_profile=1):
         },
         "profile": {
             "id": profile_id
+        },
+        "options": {
+            "queue": queue
         },
         "events": [_get_event(events[randint(0, len(events) - 1)]) for _ in range(0, events_per_profile)]
     }
