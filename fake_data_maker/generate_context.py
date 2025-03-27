@@ -45,7 +45,7 @@ def make_fake_session_context():
             "geo": {
                 "country": {
                     "name": geo[4],
-                    "code": geo[3]
+                    "code": geo[3].lower()
                 },
                 "city": geo[2],
                 "county": geo[3],
@@ -78,7 +78,7 @@ def make_fake_session_context():
                     "engine": "Gecko",
                     "appVersion": "5.0 (X11)",
                     "userAgent": fake.user_agent(),
-                    "language": fake.locale(),
+                    "language": fake.locale().replace("_","-"),
                     "onLine": True,
                     "javaEnabled": False,
                     "cookieEnabled": True
@@ -122,4 +122,4 @@ def make_fake_event_context():
     }
 
 
-pprint(make_fake_event_context())
+pprint(make_fake_session_context())

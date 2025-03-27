@@ -8,7 +8,9 @@ fake.add_provider(internet)
 fake.add_provider(phone_number)
 fake.add_provider(credit_card)
 
-fake_emails = [fake.email() for _ in range(0, 1500)]
+number_of_fake_emails = 15000
+
+fake_emails = [fake.email() for _ in range(0, number_of_fake_emails)]
 
 
 def make_fake_pii():
@@ -16,8 +18,8 @@ def make_fake_pii():
     return {
         "firstname": name[0],
         "lastname": name[1],
-        "phone": fake.phone_number(),
-        "email": fake_emails[randint(0, 1499)]
+        "phone":{"main": fake.phone_number()},
+        "email":{"main": fake_emails[randint(0, number_of_fake_emails-1)]}
     }
 
 
@@ -31,7 +33,7 @@ def make_identification_data():
         "telegram": f"@{name[0]}",
         "phone": tn,
         "whatsapp": tn,
-        "email": fake_emails[randint(0, 1499)]
+        "email": {"main": fake_emails[randint(0, number_of_fake_emails-1)]}
     }
 
 
@@ -39,16 +41,15 @@ fake_persons = [make_fake_pii() for _ in range(0, 500)]
 fake_identity = [make_identification_data() for _ in range(0, 500)]
 
 def make_fake_login():
-    name = fake.name().split()
     return {
-        "email": fake_emails[randint(0, 1499)]
+        "email":{"main": fake_emails[randint(0, number_of_fake_emails-1)]}
     }
 
 
 def make_fake_loc():
     lng, lat, town, country, tz = fake.local_latlng()
     return {
-        "login": fake_emails[randint(0, 1499)],
+        "login": fake_emails[randint(0, number_of_fake_emails-1)],
         "lng": lng,
         "lat": lat,
         "town": town,
