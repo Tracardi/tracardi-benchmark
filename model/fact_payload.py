@@ -42,8 +42,11 @@ class FactPayload(NamedEntity):
 class MeasurePayload(NamedEntity):
     value: float
 
-class EntityPayload(Entity):
-    entity_name: str
+class EntityMeta(Entity):
+    type: str
+
+class EntityPayload(BaseModel):
+    entity: EntityMeta
     properties: Optional[dict] = {}
     measures: Optional[List[MeasurePayload]] = []
 

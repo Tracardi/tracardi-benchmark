@@ -33,34 +33,6 @@ def generate_payload(source, events_per_profile=1, queue=False):
 
     session_id = sessions_pool[randint(0, len(sessions_pool) - 1)]
 
-    # def _get_event(event):
-    #     return {
-    #         "type": event['type'],
-    #         "properties": event['props']() if callable(event['props']) else event['props'],
-    #         "options": {"async": True},
-    #         "time": {
-    #             "create": datetime.utcnow().isoformat() + "Z"
-    #         }
-    #     }
-
-    # payload = {
-    #     "source": {
-    #         "id": source,
-    #         "name": "Fake data source"
-    #     },
-    #     "context": make_fake_session_context(),
-    #     "session": {
-    #         "id": session_id
-    #     },
-    #     "profile": {
-    #         "id": profile_id
-    #     },
-    #     "options": {
-    #         "queue": queue
-    #     },
-    #     "events": [_get_event(events[randint(0, len(events) - 1)]) for _ in range(0, events_per_profile)]
-    # }
-
     event = random.choice(events)
 
     payload = {
