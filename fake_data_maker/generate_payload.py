@@ -1,6 +1,5 @@
 import os
 import random
-from datetime import datetime
 from random import randint
 from uuid import uuid4
 
@@ -84,8 +83,7 @@ def generate_payload(source, events_per_profile=1, queue=False):
     for e in event['ents']:
         payload["entities"].append(
             {
-                "id": str(uuid4()),
-                "entity_name": e['entity'],
+                "entity": {"id":str(uuid4()), "type": e['entity']},
                 "properties": e['props']() if callable(e['props']) else e['props'],
                 "measures": []
             }
