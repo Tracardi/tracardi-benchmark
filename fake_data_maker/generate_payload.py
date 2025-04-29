@@ -53,9 +53,9 @@ def generate_payload(source):
     context = events[key]
 
     context_ids = []
-    entities = {actor_id:actor_props}
+    _entities = {actor_id: actor_props}
     for id, c in context:
-        entities[id] = c
+        _entities[id] = c
         context_ids.append(id)
 
     return Observation(
@@ -63,11 +63,11 @@ def generate_payload(source):
         type="Observations",
         source=Entity(id=source),
         session=ObservationSession(id=session_id),
-        entities=entities,
+        entities=_entities,
         events=[ObservationEvent(
             event=event_type,
-            actor=actor_id, # ID only
-            context=context_ids, # IDS only
+            actor=actor_id,  # ID only
+            context=context_ids,  # IDS only
             tag=random.choice(tags)
         )]
     )
