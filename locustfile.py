@@ -2,7 +2,6 @@ import os
 
 from locust import HttpUser, between, task
 from fake_data_maker.generate_payload import generate_payload
-from model.fact_payload import EventPayload
 
 source_id = os.environ.get("SOURCE_ID", '5f6caead-3fc5-4ba1-9c0c-70d460d00e2a')
 tenant = '8504a'
@@ -18,9 +17,8 @@ class WebsiteUser(HttpUser):
     @task
     def track(self):
 
-        payload = generate_payload(source=source_id, events_per_profile=4)
-        EventPayload(**payload)
-        response = self.client.put("/", json=payload, headers={
+        payload = generate_payload(source=source_id)
+        response = self.client.put("/", json=payload.model_dump(mode="json"), headers={
             'Content-Type': 'application/json',
             'x-tenant': tenant
         })
