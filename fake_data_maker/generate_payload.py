@@ -18,11 +18,11 @@ entity_types = ["customer", 'session', 'product', 'delivery']
 tags = ['prefix:my-tags', 'system:event', 'behavioural:event']
 
 entities: Dict[str, List[Tuple[str, dict]]] = {
-    "customer": [generate_entity('customer', generate_profile_data) for _ in range(0, 100)],
-    "product": [generate_entity('product', make_fake_product) for _ in range(0, 100)],
-    "check-out": [generate_entity('product', checkout_data) for _ in range(0, 100)],
-    "identity": [generate_entity('identity', make_identification_data) for _ in range(0, 100)],
-    "interest": [generate_entity('interest', get_random_interest) for _ in range(0, 100)]
+    "customer": [generate_entity('customer', generate_profile_data) for _ in range(0, 10000)],
+    "product": [generate_entity('product', make_fake_product) for _ in range(0, 5000)],
+    "check-out": [generate_entity('product', checkout_data) for _ in range(0, 1000)],
+    "identity": [generate_entity('identity', make_identification_data) for _ in range(0, 1000)],
+    "interest": [generate_entity('interest', get_random_interest) for _ in range(0, 1000)]
 }
 
 
@@ -48,12 +48,13 @@ def generate_payload(source):
 
     key = random.choice(list(events.keys()))
 
-    actor_type, event_type = key
-    actor_id, actor_props = get_random_entity(actor_type)
+    entity_type, event_type = key
+    actor_id, actor_props = get_random_entity(entity_type)
+    object_id, object_props = get_random_entity(entity_type)
     context = events[key]
 
     context_ids = []
-    _entities = {actor_id: actor_props}
+    _entities = {actor_id: actor_props, object_id: object_props}
     for id, c in context:
         _entities[id] = c
         context_ids.append(id)
@@ -67,7 +68,9 @@ def generate_payload(source):
         events=[ObservationEvent(
             event=event_type,
             actor=actor_id,  # ID only
+            object=object_id,
             context=context_ids,  # IDS only
-            tag=random.choice(tags)
+            tag=random.choice(tags),
+            properties={"data": f"$entities['{actor_id}']"}
         )]
     )
