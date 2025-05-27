@@ -1,10 +1,13 @@
 from datetime import datetime, timedelta
 from enum import Enum
-from typing import Optional, List, Any, Dict
+from typing import Optional, List, Any, Dict, Union, Set
 from uuid import uuid4
 from zoneinfo import ZoneInfo
 
-from pydantic import BaseModel
+from pydantic import BaseModel, RootModel
+
+from model.instance import Instance
+from model.instance_link import InstanceLink
 
 
 def now_in_utc(delay=None) -> datetime:
@@ -17,6 +20,9 @@ def now_in_utc(delay=None) -> datetime:
         return now - timedelta(seconds=-1 * delay)
 
     return now + timedelta(seconds=delay)
+
+class ObservationCollectConsent(BaseModel):
+    allow: bool
 
 
 class Entity(BaseModel):
@@ -32,19 +38,20 @@ class EntityMeta(Entity):
     # schema: str
 
 
-class ObservationSession(Entity):
-    ts: Optional[datetime] = None
-    context: Optional[dict] = {}
-
-
 class ObservationMeasurement(NamedEntity):
     value: float
 
 
 class ObservationEntity(BaseModel):
-    entity: EntityMeta
-    properties: Optional[dict] = {}
-    measures: Optional[List[ObservationMeasurement]] = []
+    instance: Instance
+
+    part_of: Optional[List[Instance]] = None
+    is_a: Optional[Instance] = None
+    has_a: Optional[List[Instance]] = None
+
+    traits: Optional[dict] = {}
+
+    consents: Optional[ObservationCollectConsent] = None
 
 
 class StatusEnum(str, Enum):
@@ -99,16 +106,51 @@ class EventTimer(Entity):
     trigger: Optional[int] = 1
     events: Optional[List[ObservationEvent]] = []
 
+class EntityRefs(RootModel[Dict[str, ObservationEntity]]):
 
-class Observation(Entity):
+    def get(self, link) -> Optional[ObservationEntity]:
+        return self.root.get(link)
+
+    def index(self) -> Dict[str, ObservationEntity]:
+        return self.root
+
+
+
+class ObservationConsents(ObservationCollectConsent):
+    granted: Set[str]
+
+class ObservationRelation(BaseModel):
+    id: Optional[str] = None
+    ts: Optional[datetime] = None
+    actor: Optional[Union[List[InstanceLink], InstanceLink]] = None
+    event: str
+    entities: Optional[Union[List[InstanceLink], InstanceLink]] = None
+    traits: Optional[dict] = None
+    context: Optional[List[InstanceLink]] = []
+    tags: Optional[list] = []
+    timer: Optional[ObservationTimer] = None
+
+    consents: Optional[ObservationCollectConsent] = None
+
+class ObservationMetaEntity(BaseModel):
+    ip_location: Optional[bool] = False
+    browser: Optional[bool] = False
+    device: Optional[bool] = False
+
+class ObservationMetadata(BaseModel):
+    data: Optional[dict] = {}
+    entity: ObservationMetaEntity = ObservationMetaEntity()
+
+class Observation(BaseModel):
+    id: Optional[str] = None
     type: Optional[str] = None
+    aspect: Optional[str] = None
     source: Entity
-    session: Optional[ObservationSession] = None
-    entities: Dict[str, dict]
-    events: List[ObservationEvent]
-    options: Optional[dict] = {}
+    entities: Optional[EntityRefs] = {}
+    relation: List[ObservationRelation]  # Should be relation
     context: Optional[dict] = {}
-    timer: Optional[EventTimer] = None
+    metadata: Optional[ObservationMetadata] = ObservationMetadata()
+    consents: Optional[ObservationConsents] = None
 
     def __init__(self, /, **data: Any):
         data['id'] = f"anon-{str(uuid4())}"

@@ -11,14 +11,15 @@ if source_id is None:
 
 
 class WebsiteUser(HttpUser):
-    wait_time = between(.05, .1)
+    # wait_time = between(.005, .01)
+    wait_time = between(1.5, 2)
     host = os.environ.get("HOST", "http://localhost:8585")
 
     @task
     def track(self):
 
         payload = generate_payload(source=source_id)
-        response = self.client.put("/", json=payload.model_dump(mode="json"), headers={
+        response = self.client.put("/", json=[payload.model_dump(mode="json")], headers={
             'Content-Type': 'application/json',
             'x-tenant': tenant
         })
