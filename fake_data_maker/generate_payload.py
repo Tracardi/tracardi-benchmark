@@ -4,14 +4,23 @@ from random import randint
 from typing import Dict, Tuple, List
 from uuid import uuid4
 
-from fake_data_maker.generate_actor import generate_entity
 from fake_data_maker.generate_interest import get_random_interest
 from fake_data_maker.generate_pii import make_identification_data
 from fake_data_maker.generate_products import make_fake_product, checkout_data
 from fake_data_maker.generate_profile_data import generate_profile_data
-from model.instance_link import InstanceLink
-from model.observation import Observation, Entity, \
-    ObservationRelation
+from tracardi.domain.entity import Entity
+from tracardi.domain.payload.instance_link import InstanceLink
+
+from tracardi.domain.payload.observation import Observation, ObservationRelation, ObservationEntity
+
+
+def generate_entity(type, props):
+    return (f"{type}-1", ObservationEntity(**{
+        "instance": f"{type} #{str(uuid4())}",
+        "traits": props()
+    }))
+
+
 
 sources = [str(uuid4()) for _ in range(0, int(os.environ.get("NO_OF_SOURCES", 4)))]
 profiles = [str(uuid4()) for _ in range(0, int(os.environ.get("NO_OF_PROFILES", 10000)))]
@@ -30,7 +39,6 @@ entities: Dict[str, List[Tuple[str, dict]]] = {
 
 def get_random_entity(type) -> Dict[str, dict]:
     return random.choice(entities[type])
-
 
 events = {
     ("customer", "product-added-to-basket"): [get_random_entity('product')],
@@ -67,9 +75,10 @@ def generate_payload(source):
         source=Entity(id=source),
         entities=_entities,
         relation=[ObservationRelation(
-            event=event_type,
+            type="event",
+            label=event_type,
             actor=InstanceLink(actor_link),  # ID only
-            entities=[InstanceLink(object_link)],
+            objects=[InstanceLink(object_link)],
             context=context_ids,  # IDS only
             tags=[random.choice(tags)],
             traits={"data": f"$entities['{actor_link}']"}
